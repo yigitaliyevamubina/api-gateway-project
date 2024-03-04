@@ -1,0 +1,403 @@
+definitions:
+  models.ChangePasswordReq:
+    properties:
+      email:
+        type: string
+      new_password:
+        type: string
+    type: object
+  models.ListUsersResp:
+    properties:
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/models.UserResp'
+        type: array
+    type: object
+  models.LoginReqModel:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.LoginRespModel:
+    properties:
+      result:
+        type: boolean
+      user:
+        $ref: '#/definitions/models.UserModel'
+    type: object
+  models.RegisterRespModel:
+    properties:
+      message:
+        type: string
+    type: object
+  models.Status:
+    properties:
+      message:
+        type: string
+    type: object
+  models.User:
+    properties:
+      birth_date:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    type: object
+  models.UserModel:
+    properties:
+      access_token:
+        type: string
+      birth_date:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    type: object
+  models.UserResp:
+    properties:
+      birth_date:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.VerifyRespModel:
+    properties:
+      access_token:
+        type: string
+      birth_date:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    type: object
+host: localhost:9090
+info:
+  contact: {}
+  description: api-gateway
+  title: Super Clinic
+  version: "1.0"
+paths:
+  /v1/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Login
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginReqModel'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.LoginRespModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: login user
+      tags:
+      - User
+  /v1/register:
+    post:
+      consumes:
+      - application/json
+      description: Registration
+      parameters:
+      - description: Register user
+        in: body
+        name: UserData
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.RegisterRespModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: register user
+      tags:
+      - User
+  /v1/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: get user by id
+      tags:
+      - User
+  /v1/user/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided details
+      parameters:
+      - description: Create user
+        in: body
+        name: UserInfo
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.UserModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: create user
+      tags:
+      - User
+  /v1/user/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Status'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: delete user
+      tags:
+      - User
+  /v1/user/password/change:
+    post:
+      consumes:
+      - application/json
+      description: Change password
+      parameters:
+      - description: Change password
+        in: body
+        name: Change-password
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangePasswordReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Status'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: change password
+      tags:
+      - User
+  /v1/user/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update User
+        in: body
+        name: UserInfo
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: update user
+      tags:
+      - User
+  /v1/users/{page}/{limit}/{filter}:
+    get:
+      consumes:
+      - application/json
+      description: get all users
+      parameters:
+      - description: page
+        in: path
+        name: page
+        type: string
+      - description: limit
+        in: path
+        name: limit
+        type: string
+      - description: filter
+        in: path
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ListUsersResp'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: get users' list
+      tags:
+      - User
+  /v1/verify/{email}/{code}:
+    get:
+      consumes:
+      - application/json
+      description: Verify a user with code sent to their email
+      parameters:
+      - description: email
+        in: path
+        name: email
+        required: true
+        type: string
+      - description: code
+        in: path
+        name: code
+        required: true
+        type: string
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.VerifyRespModel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: verify user
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
